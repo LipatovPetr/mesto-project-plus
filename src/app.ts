@@ -2,6 +2,7 @@ require("dotenv").config();
 import express, { Request, Response } from "express";
 import connectDB from "./db/connect";
 import usersRouter from "./routes/users";
+import cardsRouter from "./routes/cards";
 
 // variables
 
@@ -11,6 +12,7 @@ const app = express();
 // routes
 
 app.use("/users", usersRouter);
+app.use("/cards", cardsRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).send("<h1>Страница найдена, но</h1>");
