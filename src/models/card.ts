@@ -1,6 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const CardSchema = new mongoose.Schema({
+interface Card extends Document {
+  name: string;
+  link: string;
+  owner: mongoose.Types.ObjectId;
+  likes: mongoose.Types.ObjectId[];
+  createdAt: Date;
+}
+
+const CardSchema = new mongoose.Schema<Card>({
   name: {
     type: String,
     required: [true, "Пожалуйста, введите название"],
@@ -12,12 +20,12 @@ const CardSchema = new mongoose.Schema({
     required: [true, "Пожалуйста, предоставте информацию о профессии"],
   },
   owner: {
-    type: mongoose.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: [true, "Пожалуйста, введите владельца"],
   },
   likes: {
-    type: [mongoose.Types.ObjectId],
+    type: [Schema.Types.ObjectId],
     default: [],
     required: [true, "Пожалуйста, предоставте ссылку"],
   },
@@ -27,4 +35,4 @@ const CardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Card", CardSchema);
+export default mongoose.model<Card>("card", CardSchema);

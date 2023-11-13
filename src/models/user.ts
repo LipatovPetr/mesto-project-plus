@@ -1,22 +1,31 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-const UserSchema = new mongoose.Schema({
+interface User extends Document {
+  name: string;
+  about: string;
+  avatar: string;
+}
+
+const UserSchema = new mongoose.Schema<User>({
   name: {
     type: String,
-    required: [true, "Пожалуйста, введите имя"],
+    required: [true, "У каждого пользователя должно быть имя"],
     minLength: 2,
     maxLength: 30,
   },
   about: {
     type: String,
-    required: [true, "Пожалуйста, предоставте информацию о профессии"],
+    required: [
+      true,
+      "У каждого пользователя должна быть информация о профессии",
+    ],
     minLength: 2,
     maxLength: 200,
   },
   avatar: {
     type: String,
-    required: [true, "Пожалуйста, предоставте ссылку"],
+    required: [true, "У каждого пользователя должна быть ссылка на аватар"],
   },
 });
 
-module.exports = mongoose.model("User", UserSchema);
+export default mongoose.model<User>("user", UserSchema);
