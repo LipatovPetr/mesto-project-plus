@@ -4,10 +4,26 @@ import connectDB from "./db/connect";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
+interface ExtendedRequest extends Request {
+  user?: {
+    _id: string;
+  };
+}
+
 // variables
 
 const { PORT = 3000, MONGO_URI = "" } = process.env;
 const app = express();
+
+// middleware
+
+app.use(express.json());
+app.use((req: ExtendedRequest, res, next) => {
+  req.user = {
+    _id: "655244cbfb0de97192ed0325",
+  };
+  next();
+});
 
 // routes
 

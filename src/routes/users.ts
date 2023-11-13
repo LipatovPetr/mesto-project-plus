@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { createUser } from "../controllers/users";
 
 const router = express.Router();
 
@@ -10,8 +11,6 @@ router.get("/:userId", (req: Request, res: Response) => {
   res.send("<h1>returns user by id</h1>");
 });
 
-router.post("/", (req: Request, res: Response) => {
-  res.send("<h1>creates user</h1>");
-});
+router.post("/", createUser);
 
 export default router;
