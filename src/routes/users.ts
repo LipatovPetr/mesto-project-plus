@@ -1,16 +1,9 @@
 import express, { Request, Response } from "express";
-import { createUser } from "../controllers/users";
+import { createUser, getAllUsers, getUser } from "../controllers/users";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  res.send("<h1>returns all users</h1>");
-});
-
-router.get("/:userId", (req: Request, res: Response) => {
-  res.send("<h1>returns user by id</h1>");
-});
-
-router.post("/", createUser);
+router.get("/", getAllUsers).post("/", createUser);
+router.get("/:id", getUser);
 
 export default router;
