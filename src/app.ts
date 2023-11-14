@@ -1,14 +1,9 @@
 require("dotenv").config();
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
+import { ExtendedRequest } from "./types";
 import connectDB from "./db/connect";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
-
-interface ExtendedRequest extends Request {
-  user?: {
-    _id: string;
-  };
-}
 
 // variables
 
@@ -30,7 +25,7 @@ app.use((req: ExtendedRequest, res, next) => {
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (req: ExtendedRequest, res: Response) => {
   res.status(200).send("<h1>Страница найдена, но</h1>");
 });
 
