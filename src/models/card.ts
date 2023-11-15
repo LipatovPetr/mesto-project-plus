@@ -27,7 +27,6 @@ const CardSchema = new mongoose.Schema<Card>({
   likes: {
     type: [Schema.Types.ObjectId],
     default: [],
-    required: [true, "Пожалуйста, предоставте ссылку"],
   },
   createdAt: {
     type: Date,
