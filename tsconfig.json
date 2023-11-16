@@ -19,7 +19,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/db/connect.js"  ],
   "exclude": [
     "node_modules"
   ],
