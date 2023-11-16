@@ -1,11 +1,10 @@
 import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { MongooseError } from 'mongoose';
+import mongoose from 'mongoose';
 
 const handleErrors = (res: Response, error: unknown) => {
   // Mongoose errors
-
-  if (error instanceof MongooseError) {
+  if (error instanceof mongoose.Error) {
     let statusCode: number;
     switch (error.name) {
       case 'ValidationError':
@@ -25,16 +24,12 @@ const handleErrors = (res: Response, error: unknown) => {
   // Errors from Error() constructor
 
   if (error instanceof Error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send({ message: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
   }
 
   // Error messages
 
-  return res
-    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ error: `${error}` });
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
 };
 
 export default handleErrors;
