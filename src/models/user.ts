@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document } from 'mongoose';
 
 interface User extends Document {
   name: string;
@@ -9,23 +9,20 @@ interface User extends Document {
 const UserSchema = new mongoose.Schema<User>({
   name: {
     type: String,
-    required: [true, "У каждого пользователя должно быть имя"],
-    minLength: 2,
-    maxLength: 30,
+    required: [true, 'User must have a name'],
+    minLength: [2, 'Name must be at least 2 characters long'],
+    maxLength: [30, 'Name must not exceed 30 characters'],
   },
   about: {
     type: String,
-    required: [
-      true,
-      "У каждого пользователя должна быть информация о профессии",
-    ],
-    minLength: 2,
-    maxLength: 200,
+    required: [true, "User's about field must not be empty"],
+    minLength: [2, 'Name must be at least 2 characters long'],
+    maxLength: [200, 'Name must not exceed 30 characters'],
   },
   avatar: {
     type: String,
-    required: [true, "У каждого пользователя должна быть ссылка на аватар"],
+    required: [true, 'User must have a link on avatar'],
   },
 });
 
-export default mongoose.model<User>("user", UserSchema);
+export default mongoose.model<User>('user', UserSchema);

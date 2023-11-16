@@ -1,32 +1,25 @@
-import { Response } from "express";
-import { ExtendedRequest } from "../types";
-import { StatusCodes } from "http-status-codes";
-import Card from "../models/card";
+import { StatusCodes } from 'http-status-codes';
+import { Response } from 'express';
+import { ExtendedRequest } from '../types';
+import Card from '../models/card';
+import handleErrors from '../utils/error-handler';
 
 export const createCard = async (req: ExtendedRequest, res: Response) => {
   try {
-    const { name, link } = req.body;
-
-    if (!name || !link) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Invalid data for card creation" });
-    }
-
     const reqBodyWithUserID = { owner: req.user?._id, ...req.body };
     const newCard = await Card.create(reqBodyWithUserID);
-    res.status(StatusCodes.OK).json(newCard);
+    return res.status(StatusCodes.OK).json(newCard);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+    return handleErrors(res, error);
   }
 };
 
 export const getAllCards = async (req: ExtendedRequest, res: Response) => {
   try {
     const cards = await Card.find({});
-    res.status(StatusCodes.OK).json({ cards, count: cards.length });
+    return res.status(StatusCodes.OK).json({ cards, count: cards.length });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+    return handleErrors(res, error);
   }
 };
 
@@ -36,10 +29,10 @@ export const deleteCard = async (req: ExtendedRequest, res: Response) => {
       params: { id: cardID },
     } = req;
 
-    const cards = await Card.findByIdAndDelete(cardID);
-    res.status(StatusCodes.OK).json({});
+    await Card.findByIdAndDelete(cardID).orFail(() => Error('Card not found'));
+    return res.status(StatusCodes.OK).json({});
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+    return handleErrors(res, error);
   }
 };
 
@@ -52,12 +45,12 @@ export const addLike = async (req: ExtendedRequest, res: Response) => {
     const card = await Card.findByIdAndUpdate(
       cardID,
       { $addToSet: { likes: req.user?._id } },
-      { new: true }
-    );
+      { new: true },
+    ).orFail(() => Error('Card not found'));
 
-    res.status(StatusCodes.OK).json(card);
+    return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+    return handleErrors(res, error);
   }
 };
 
@@ -70,11 +63,11 @@ export const removeLike = async (req: ExtendedRequest, res: Response) => {
     const card = await Card.findByIdAndUpdate(
       cardID,
       { $pull: { likes: req.user?._id } },
-      { new: true }
-    );
+      { new: true },
+    ).orFail(() => Error('Card not found'));
 
-    res.status(StatusCodes.OK).json(card);
+    return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+    return handleErrors(res, error);
   }
 };
