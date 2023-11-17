@@ -39,6 +39,7 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
   try {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
+      runValidators: true,
     }).orFail(() => Error('User not found'));
 
     return res.status(StatusCodes.OK).json(updatedUser);
@@ -51,6 +52,7 @@ export const updateAvatar = async (req: ExtendedRequest, res: Response) => {
   try {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
+      runValidators: true,
     }).orFail(() => Error('User not found'));
 
     return res.status(StatusCodes.OK).json(updatedUser);

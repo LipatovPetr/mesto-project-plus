@@ -3,12 +3,14 @@ import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 
 const handleErrors = (res: Response, error: unknown) => {
-  // Mongoose errors
-  if (error instanceof mongoose.Error) {
+  if (error instanceof Error) {
     let statusCode: number;
     switch (error.name) {
       case 'ValidationError':
       case 'CastError':
+      case 'CastError':
+      case 'User not found':
+      case 'Card not found':
         statusCode = StatusCodes.BAD_REQUEST;
         break;
       case 'DocumentNotFoundError':
@@ -20,16 +22,7 @@ const handleErrors = (res: Response, error: unknown) => {
     }
     return res.status(statusCode).send({ message: error.message });
   }
-
-  // Errors from Error() constructor
-
-  if (error instanceof Error) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
-  }
-
-  // Error messages
-
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: `${error}` });
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: error });
 };
 
 export default handleErrors;
