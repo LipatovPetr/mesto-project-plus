@@ -10,7 +10,9 @@ export const createCard = async (req: ExtendedRequest, res: Response) => {
     const newCard = await Card.create(reqBodyWithUserID);
     return res.status(StatusCodes.OK).json(newCard);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -19,7 +21,9 @@ export const getAllCards = async (req: ExtendedRequest, res: Response) => {
     const cards = await Card.find({});
     return res.status(StatusCodes.OK).json({ cards, count: cards.length });
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -32,7 +36,9 @@ export const deleteCard = async (req: ExtendedRequest, res: Response) => {
     await Card.findByIdAndDelete(cardID).orFail(() => Error('Card not found'));
     return res.status(StatusCodes.OK).json({});
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -46,11 +52,13 @@ export const addLike = async (req: ExtendedRequest, res: Response) => {
       cardID,
       { $addToSet: { likes: req.user?._id } },
       { new: true },
-    ).orFail(() => Error('Card not found'));
+    ).orFail(() => Error());
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -64,10 +72,12 @@ export const removeLike = async (req: ExtendedRequest, res: Response) => {
       cardID,
       { $pull: { likes: req.user?._id } },
       { new: true },
-    ).orFail(() => Error('Card not found'));
+    ).orFail(() => Error());
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };

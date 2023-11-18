@@ -10,7 +10,9 @@ export const createUser = async (req: ExtendedRequest, res: Response) => {
     const newUser = await User.create({ name, about, avatar });
     return res.status(StatusCodes.OK).json(newUser);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -19,7 +21,9 @@ export const getAllUsers = async (req: ExtendedRequest, res: Response) => {
     const users = await User.find({});
     return res.status(StatusCodes.OK).json({ users, count: users.length });
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -28,10 +32,12 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
     const {
       params: { id: userId },
     } = req;
-    const user = await User.findOne({ _id: userId }).orFail(() => Error('User not found'));
+    const user = await User.findOne({ _id: userId }).orFail(() => Error());
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -40,11 +46,13 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
       runValidators: true,
-    }).orFail(() => Error('User not found'));
+    }).orFail(() => Error());
 
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
 
@@ -53,10 +61,12 @@ export const updateAvatar = async (req: ExtendedRequest, res: Response) => {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
       runValidators: true,
-    }).orFail(() => Error('User not found'));
+    }).orFail(() => Error());
 
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    return handleErrors(res, error);
+    if (error instanceof Error) {
+      return handleErrors(res, error);
+    }
   }
 };
