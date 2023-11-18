@@ -10,9 +10,7 @@ export const createCard = async (req: ExtendedRequest, res: Response) => {
     const newCard = await Card.create(reqBodyWithUserID);
     return res.status(StatusCodes.OK).json(newCard);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -21,9 +19,7 @@ export const getAllCards = async (req: ExtendedRequest, res: Response) => {
     const cards = await Card.find({});
     return res.status(StatusCodes.OK).json({ cards, count: cards.length });
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -33,12 +29,10 @@ export const deleteCard = async (req: ExtendedRequest, res: Response) => {
       params: { id: cardID },
     } = req;
 
-    await Card.findByIdAndDelete(cardID).orFail(() => Error('Card not found'));
+    await Card.findByIdAndDelete(cardID).orFail();
     return res.status(StatusCodes.OK).json({});
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -52,13 +46,11 @@ export const addLike = async (req: ExtendedRequest, res: Response) => {
       cardID,
       { $addToSet: { likes: req.user?._id } },
       { new: true },
-    ).orFail(() => Error());
+    ).orFail();
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -72,12 +64,10 @@ export const removeLike = async (req: ExtendedRequest, res: Response) => {
       cardID,
       { $pull: { likes: req.user?._id } },
       { new: true },
-    ).orFail(() => Error());
+    ).orFail();
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };

@@ -10,9 +10,7 @@ export const createUser = async (req: ExtendedRequest, res: Response) => {
     const newUser = await User.create({ name, about, avatar });
     return res.status(StatusCodes.OK).json(newUser);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -21,9 +19,7 @@ export const getAllUsers = async (req: ExtendedRequest, res: Response) => {
     const users = await User.find({});
     return res.status(StatusCodes.OK).json({ users, count: users.length });
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -35,9 +31,7 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
     const user = await User.findOne({ _id: userId }).orFail(() => Error());
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -46,13 +40,11 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
       runValidators: true,
-    }).orFail(() => Error());
+    }).orFail();
 
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
 
@@ -61,12 +53,10 @@ export const updateAvatar = async (req: ExtendedRequest, res: Response) => {
     const updatedUser = await User.findOneAndUpdate(req.user, req.body, {
       returnDocument: 'after',
       runValidators: true,
-    }).orFail(() => Error());
+    }).orFail();
 
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    if (error instanceof Error) {
-      return handleErrors(res, error);
-    }
+    return handleErrors(res, error as Error);
   }
 };
