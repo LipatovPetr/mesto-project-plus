@@ -1,11 +1,12 @@
-require('dotenv').config();
 import express, { Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { login } from './controllers/users';
 import { ExtendedRequest } from './types';
 import connectDB from './db/connect';
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
-import { StatusCodes } from 'http-status-codes';
 
+require('dotenv').config();
 // variables
 
 const { PORT = 3000, MONGO_URI = '' } = process.env;
@@ -23,11 +24,14 @@ app.use((req: ExtendedRequest, res, next) => {
 
 // routes
 
+app.get('/signin', login);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.get('/', (req: ExtendedRequest, res: Response) => {
-  res.status(StatusCodes.NOT_FOUND).send('<h1>Страница не найдена</h1>');
+  res
+    .status(StatusCodes.NOT_FOUND)
+    .send('<h1>Страница не найдена</h1>');
 });
 
 // start app function
