@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema<User, UserModel>({
     type: String,
     required: true,
     minlength: 8,
+    select: false,
   },
   name: {
     type: String,
@@ -62,7 +63,9 @@ userSchema.static(
     email: string,
     password: string,
   ) {
-    const user: UserWIthID = await this.findOne({ email }).orFail();
+    const user: UserWIthID = await this.findOne({ email })
+      .select('+password')
+      .orFail();
     const matched = await bcrypt.compare(password, user.password);
 
     if (!matched) {

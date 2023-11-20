@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { login } from './controllers/users';
+import { login, createUser } from './controllers/users';
+import auth from './middlewares/auth';
 import { ExtendedRequest } from './types';
 import connectDB from './db/connect';
 import usersRouter from './routes/users';
@@ -15,16 +16,14 @@ const app = express();
 // middleware
 
 app.use(express.json());
-app.use((req: ExtendedRequest, res, next) => {
-  req.user = {
-    _id: '655244cbfb0de97192ed0325',
-  };
-  next();
-});
 
-// routes
+// route
 
 app.get('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
+
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
