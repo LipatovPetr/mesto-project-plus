@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema<User, UserModel>({
   },
   avatar: {
     type: String,
+    match: [
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+      'Invalid url format',
+    ],
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
