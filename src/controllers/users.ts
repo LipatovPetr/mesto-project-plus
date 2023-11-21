@@ -11,7 +11,7 @@ export const login = async (req: ExtendedRequest, res: Response) => {
     const { email, password } = req.body;
     const user = await User.findUserByCredentials(email, password);
     const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
-      expiresIn: 3600,
+      expiresIn: '7d',
     });
 
     res.cookie('jwt', token, {

@@ -20,7 +20,6 @@ function auth(
 
   try {
     payload = jwt.verify(token, 'some-secret-key') as { _id: string };
-    console.log(payload);
   } catch (err) {
     return res
       .status(401)
