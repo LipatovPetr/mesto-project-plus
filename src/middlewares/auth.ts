@@ -21,13 +21,11 @@ function auth(
 
   try {
     payload = jwt.verify(token, 'some-secret-key') as { _id: string };
-  } catch (err) {
-    throw new BadRequestError(
-      'Authentication failed. Please provide valid credentials.',
-    );
+  } catch (error) {
+    return next(error);
   }
   req.user = payload;
-  next();
+  return next();
 }
 
 export default auth;

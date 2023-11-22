@@ -18,6 +18,11 @@ const CardSchema = new mongoose.Schema<Card>({
   link: {
     type: String,
     required: [true, 'Card must have a link'],
+    match: [
+      // eslint-disable-next-line no-useless-escape
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+      'Invalid url format',
+    ],
   },
   owner: {
     type: Schema.Types.ObjectId,
