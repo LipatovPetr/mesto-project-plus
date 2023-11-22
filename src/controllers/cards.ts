@@ -1,25 +1,28 @@
 import { StatusCodes } from 'http-status-codes';
-import { Response } from 'express';
+import { Response, NextFunction } from 'express';
+import BadRequestError from '../errors/bad-request';
+
 import { ExtendedRequest } from '../types';
 import Card from '../models/card';
-import handleErrors from '../utils/error-handler';
 
 export const createCard = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const reqBodyWithUserID = { owner: req.user?._id, ...req.body };
     const newCard = await Card.create(reqBodyWithUserID);
     return res.status(StatusCodes.OK).json(newCard);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const getAllCards = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const cards = await Card.find({});
@@ -27,13 +30,14 @@ export const getAllCards = async (
       .status(StatusCodes.OK)
       .json({ cards, count: cards.length });
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const deleteCard = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const {
@@ -44,20 +48,20 @@ export const deleteCard = async (
     const card = await Card.findById(cardID).orFail();
 
     if (card.owner.toString() !== userID) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: 'You do not have permission to delete this card.',
-      });
+      throw new BadRequestError(
+        'You do not have permission to delete this card.',
+      );
     }
-
     return res.status(StatusCodes.OK).json({});
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const addLike = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const {
@@ -72,13 +76,14 @@ export const addLike = async (
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const removeLike = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const {
@@ -93,6 +98,6 @@ export const removeLike = async (
 
     return res.status(StatusCodes.OK).json(card);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };

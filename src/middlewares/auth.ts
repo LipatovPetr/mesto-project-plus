@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
+import BadRequestError from '../errors/bad-request';
 import { ExtendedRequest } from '../types';
 
 function auth(
@@ -10,9 +11,9 @@ function auth(
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    throw new BadRequestError(
+      'Authentication failed. Please provide valid credentials.',
+    );
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -21,13 +22,12 @@ function auth(
   try {
     payload = jwt.verify(token, 'some-secret-key') as { _id: string };
   } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    throw new BadRequestError(
+      'Authentication failed. Please provide valid credentials.',
+    );
   }
   req.user = payload;
   next();
-  return null;
 }
 
 export default auth;

@@ -1,12 +1,16 @@
-import { Response } from 'express';
+import { Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import NotFoundError from '../errors/not-found';
 import { ExtendedRequest } from '../types';
-import handleErrors from '../utils/error-handler';
 import User from '../models/user';
 
-export const login = async (req: ExtendedRequest, res: Response) => {
+export const login = async (
+  req: ExtendedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { email, password } = req.body;
     const user = await User.findUserByCredentials(email, password);
@@ -17,18 +21,18 @@ export const login = async (req: ExtendedRequest, res: Response) => {
     res.cookie('jwt', token, {
       httpOnly: true,
     });
-
     return res
       .status(StatusCodes.OK)
       .json({ message: 'Authentication successful' });
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const createUser = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const {
@@ -51,13 +55,14 @@ export const createUser = async (
 
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const getAllUsers = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const users = await User.find({});
@@ -65,30 +70,37 @@ export const getAllUsers = async (
       .status(StatusCodes.OK)
       .json({ users, count: users.length });
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const getUser = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const {
       params: { id: userId },
     } = req;
-    const user = await User.findOne({ _id: userId }).orFail(() =>
-      Error(),
-    );
+    const user = await User.findOne({ _id: userId }).orFail();
+
+    if (!user) {
+      throw new NotFoundError(
+        `No user found with the provided id: ${userId}`,
+      );
+    }
+
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const updateUser = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
@@ -99,16 +111,16 @@ export const updateUser = async (
         runValidators: true,
       },
     ).orFail();
-
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
 
 export const updateAvatar = async (
   req: ExtendedRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
@@ -122,6 +134,6 @@ export const updateAvatar = async (
 
     return res.status(StatusCodes.OK).json(updatedUser);
   } catch (error) {
-    return handleErrors(res, error as Error);
+    return next(error);
   }
 };
