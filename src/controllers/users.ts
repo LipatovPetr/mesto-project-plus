@@ -80,6 +80,20 @@ export const getUser = async (
   next: NextFunction,
 ) => {
   try {
+    const user = await User.findOne({ _id: req.user?._id }).orFail();
+
+    return res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getUserByID = async (
+  req: ExtendedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
     const {
       params: { id: userId },
     } = req;

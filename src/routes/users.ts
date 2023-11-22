@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getAllUsers,
   getUser,
+  getUserByID,
   updateUser,
   updateAvatar,
 } from '../controllers/users';
@@ -12,6 +13,19 @@ const router = express.Router();
 
 router.route('/').get(getAllUsers);
 
+router
+  .route('/me')
+  .get(getUser)
+  .patch(
+    celebrate({
+      body: Joi.object().keys({
+        name: Joi.string().min(2).max(30),
+        about: Joi.string().min(2).max(200),
+      }),
+    }),
+    updateUser,
+  );
+
 router.get(
   '/:id',
   celebrate({
@@ -19,18 +33,7 @@ router.get(
       id: Joi.string().required(),
     }),
   }),
-  getUser,
-);
-
-router.patch(
-  '/me',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(200),
-    }),
-  }),
-  updateUser,
+  getUserByID,
 );
 
 router.patch(
