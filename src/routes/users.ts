@@ -1,4 +1,5 @@
 import express from 'express';
+import urlRegex from '../constants';
 import {
   getAllUsers,
   getUser,
@@ -19,8 +20,8 @@ router
   .patch(
     celebrate({
       body: Joi.object().keys({
-        name: Joi.string().min(2).max(30),
-        about: Joi.string().min(2).max(200),
+        name: Joi.string().min(2).max(30).required(),
+        about: Joi.string().min(2).max(200).required(),
       }),
     }),
     updateUser,
@@ -30,7 +31,7 @@ router.get(
   '/:id',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().required(),
+      id: Joi.string().hex().required(),
     }),
   }),
   getUserByID,
@@ -40,7 +41,7 @@ router.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().uri().required(),
+      avatar: Joi.string().regex(urlRegex, 'URL format').required(),
     }),
   }),
   updateAvatar,

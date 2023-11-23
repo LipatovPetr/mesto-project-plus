@@ -1,7 +1,8 @@
 import mongoose, { Document } from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
 import bcrypt from 'bcryptjs';
-import BadRequestError from '../errors/bad-request';
+import UnauthorizedError from '../errors/unauthorized';
+import urlRegex from '../constants';
 
 interface User extends Document {
   email: string;
@@ -36,7 +37,6 @@ const userSchema = new mongoose.Schema<User, UserModel>({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
   name: {
@@ -53,11 +53,7 @@ const userSchema = new mongoose.Schema<User, UserModel>({
   },
   avatar: {
     type: String,
-    match: [
-      // eslint-disable-next-line no-useless-escape
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
-      'Invalid url format',
-    ],
+    match: [urlRegex, 'Invalid url format'],
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
@@ -75,7 +71,7 @@ userSchema.static(
     const matched = await bcrypt.compare(password, user.password);
 
     if (!matched) {
-      throw new BadRequestError('Wrong email address or password');
+      throw new UnauthorizedError('Wrong email address or password');
     }
     return user;
   },

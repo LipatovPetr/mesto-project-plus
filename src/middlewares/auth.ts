@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
-import BadRequestError from '../errors/bad-request';
+import UnauthorizedError from '../errors/unauthorized';
 import { ExtendedRequest } from '../types';
 
 function auth(
@@ -11,7 +11,7 @@ function auth(
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new BadRequestError(
+    throw new UnauthorizedError(
       'Authentication failed. Please provide valid credentials.',
     );
   }

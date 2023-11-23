@@ -6,6 +6,7 @@ import {
   addLike,
   removeLike,
 } from '../controllers/cards';
+import urlRegex from '../constants';
 
 const { celebrate, Joi } = require('celebrate');
 
@@ -18,7 +19,7 @@ router
     celebrate({
       body: Joi.object().keys({
         name: Joi.string().min(2).max(30).required(),
-        link: Joi.string().uri().required(),
+        link: Joi.string().regex(urlRegex, 'URL format').required(),
       }),
     }),
     createCard,
@@ -28,7 +29,7 @@ router.delete(
   '/:id',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().required(),
+      id: Joi.string().hex().required(),
     }),
   }),
   deleteCard,
@@ -39,7 +40,7 @@ router
   .put(
     celebrate({
       params: Joi.object().keys({
-        id: Joi.string().required(),
+        id: Joi.string().hex().required(),
       }),
     }),
     addLike,
@@ -47,7 +48,7 @@ router
   .delete(
     celebrate({
       params: Joi.object().keys({
-        id: Joi.string().required(),
+        id: Joi.string().hex().required(),
       }),
     }),
     removeLike,

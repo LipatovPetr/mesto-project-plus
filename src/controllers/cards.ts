@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { Response, NextFunction } from 'express';
-import BadRequestError from '../errors/bad-request';
+import ForbiddenError from '../errors/forbidden';
 import { ExtendedRequest } from '../types';
 import Card from '../models/card';
 
@@ -46,7 +46,7 @@ export const deleteCard = async (
     const userID = user!._id;
     const card = await Card.findById(cardID).orFail();
     if (card.owner.toString() !== userID) {
-      throw new BadRequestError(
+      throw new ForbiddenError(
         'You do not have permission to delete this card.',
       );
     }

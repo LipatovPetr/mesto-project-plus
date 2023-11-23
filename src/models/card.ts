@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import urlRegex from '../constants';
 
 interface Card extends Document {
   name: string;
@@ -20,7 +21,7 @@ const CardSchema = new mongoose.Schema<Card>({
     required: [true, 'Card must have a link'],
     match: [
       // eslint-disable-next-line no-useless-escape
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+      urlRegex,
       'Invalid url format',
     ],
   },

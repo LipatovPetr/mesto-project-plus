@@ -1,5 +1,8 @@
 import express, { Response } from 'express';
-import ExtendedError from './errors/extended-error';
+import BadRequestError from './errors/bad-request';
+import ForbiddenError from './errors/forbidden';
+import NotFoundError from './errors/not-found';
+import UnauthorizedError from './errors/unauthorized';
 import { login, createUser } from './controllers/users';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import auth from './middlewares/auth';
@@ -27,17 +30,31 @@ app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
+app.get('*', (req, res) => {
+  res.status(404).send('Ops! This page does not exist');
+});
+
 app.use(errorLogger);
 app.use(errors());
-app.use((err: ExtendedError, req: ExtendedRequest, res: Response) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message:
-      statusCode === 500
-        ? 'Oops! Something went wrong on our server.'
-        : message,
-  });
-});
+app.use(
+  (
+    err:
+      | BadRequestError
+      | ForbiddenError
+      | NotFoundError
+      | UnauthorizedError,
+    req: ExtendedRequest,
+    res: Response,
+  ) => {
+    const { statusCode = 500, message } = err;
+    res.status(statusCode).send({
+      message:
+        statusCode === 500
+          ? 'Oops! Something went wrong on our server.'
+          : message,
+    });
+  },
+);
 
 // start app function
 
