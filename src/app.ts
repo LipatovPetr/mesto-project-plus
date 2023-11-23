@@ -4,6 +4,7 @@ import ForbiddenError from './errors/forbidden';
 import NotFoundError from './errors/not-found';
 import UnauthorizedError from './errors/unauthorized';
 import { login, createUser } from './controllers/users';
+import pageNotFound from './controllers/pageNotFound';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import auth from './middlewares/auth';
 import { ExtendedRequest } from './types';
@@ -29,10 +30,7 @@ app.post('/signup', createUser);
 app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
-
-app.get('*', (req, res) => {
-  res.status(404).send('Ops! This page does not exist');
-});
+app.get('*', pageNotFound);
 
 app.use(errorLogger);
 app.use(errors());
