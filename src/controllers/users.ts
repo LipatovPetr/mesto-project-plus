@@ -2,7 +2,9 @@ import { Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { MongoError } from 'mongodb';
 import NotFoundError from '../errors/not-found';
+import BadRequestError from '../errors/bad-request';
 import { ExtendedRequest } from '../types';
 import User from '../models/user';
 
@@ -55,6 +57,9 @@ export const createUser = async (
 
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {
+    if (error instanceof MongoError && error.code === 11000) {
+      return next(new BadRequestError('Ops! User already exists.'));
+    }
     return next(error);
   }
 };
