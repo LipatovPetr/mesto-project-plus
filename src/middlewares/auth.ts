@@ -20,11 +20,13 @@ function auth(
   let payload;
 
   try {
-    payload = jwt.verify(token, 'some-secret-key') as { _id: string };
+    payload = jwt.verify(token, 'some-secret-key');
   } catch (error) {
-    return next(error);
+    return next(
+      new UnauthorizedError('Authentication failed: Invalid token.'),
+    );
   }
-  req.user = payload;
+  req.user = payload as { _id: string };
   return next();
 }
 
