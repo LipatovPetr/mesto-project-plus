@@ -6,7 +6,7 @@ import {
   addLike,
   removeLike,
 } from '../controllers/cards';
-import urlRegex from '../constants';
+import { urlRegex } from '../constants';
 
 const { celebrate, Joi } = require('celebrate');
 
@@ -29,7 +29,7 @@ router.delete(
   '/:id',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().hex().required(),
+      id: Joi.string().length(24).hex().required(),
     }),
   }),
   deleteCard,

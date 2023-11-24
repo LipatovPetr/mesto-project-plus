@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
 import bcrypt from 'bcryptjs';
 import UnauthorizedError from '../errors/unauthorized';
-import urlRegex from '../constants';
+import { urlRegex } from '../constants';
 
 interface User extends Document {
   email: string;
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema<User, UserModel>({
   },
   avatar: {
     type: String,
-    match: [urlRegex, 'Invalid url format'],
+    match: [urlRegex, 'Invalid url'],
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },

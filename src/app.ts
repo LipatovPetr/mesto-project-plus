@@ -1,5 +1,4 @@
 import express from 'express';
-import { login, createUser } from './controllers/users';
 import pageNotFound from './controllers/pageNotFound';
 import errorsHandler from './middlewares/errorsHandler';
 import { requestLogger, errorLogger } from './middlewares/logger';
@@ -7,6 +6,8 @@ import auth from './middlewares/auth';
 import connectDB from './db/connect';
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
+import signupRouter from './routes/signup';
+import signinRouter from './routes/signin';
 
 require('dotenv').config();
 const { errors } = require('celebrate');
@@ -21,8 +22,8 @@ const app = express();
 app.use(requestLogger);
 app.use(express.json());
 
-app.get('/signin', login);
-app.post('/signup', createUser);
+app.use('/', signupRouter);
+app.use('/', signinRouter);
 app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);

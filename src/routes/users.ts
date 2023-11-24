@@ -1,5 +1,5 @@
 import express from 'express';
-import urlRegex from '../constants';
+import { urlRegex } from '../constants';
 import {
   getAllUsers,
   getUser,
@@ -31,7 +31,7 @@ router.get(
   '/:id',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().hex().required(),
+      id: Joi.string().hex().length(24).required(),
     }),
   }),
   getUserByID,
