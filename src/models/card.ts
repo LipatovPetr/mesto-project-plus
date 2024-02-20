@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import urlRegex from '../constants';
+import { urlRegex } from '../constants';
 
 interface Card extends Document {
   name: string;
